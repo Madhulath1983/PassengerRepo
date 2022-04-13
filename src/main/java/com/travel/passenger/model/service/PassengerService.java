@@ -36,4 +36,9 @@ public class PassengerService {
 		return passengerList;
 	}
 
+	public List<Passenger> getPassengerListByFlightNo(long flightNo) {
+		List<Passenger> passengerList =(List<Passenger>) passengerRepository.findAllPassengerByFlightNo(flightNo);
+		return passengerList;
+	}
+
 }

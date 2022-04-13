@@ -1,6 +1,9 @@
 package com.travel.passenger.model.controller;
 
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -71,8 +74,26 @@ public class PassengerController {
 		return new ResponseEntity("Passenger details deleted", HttpStatus.OK);
 	}
 
-	@GetMapping(value = "/getallTickets")
+	@GetMapping(value = "/getAllTickets")
 	public List<Passenger> getAllTickets() {
 		return passengerService.getAllPassengers();
+	}
+
+	@GetMapping(value = "/getAllPassengersSortedByDOJ")
+	public List<Passenger> getAllPassengersSortedByDOJ() {
+		List<Passenger> sortedList = passengerService.getAllPassengers();
+		Collections.sort(sortedList);
+		return sortedList;
+	}
+
+	@GetMapping(value = "/getPassengerListByFlightNo/{flightNo}")
+	public ResponseEntity<String> getPassengerListByFlightNo(@PathVariable("flightNo") long flightNo) {
+		if (flightNo < 0)
+			return new ResponseEntity("Invalid FlightNo", HttpStatus.NOT_FOUND);
+
+		List<Passenger> passengerList = passengerService.getPassengerListByFlightNo(flightNo);
+		List<Passenger> sortedPassengerList = passengerList.stream()
+				.sorted(Comparator.comparing(Passenger::getFirst_Name)).collect(Collectors.toList());
+		return new ResponseEntity(sortedPassengerList, HttpStatus.NOT_FOUND);
 	}
 }
